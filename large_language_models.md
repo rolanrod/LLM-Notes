@@ -31,7 +31,7 @@ BERT uses only the encoder half of the transformer architecture to produce this 
 
 The key innovation of BERT that set it apart from the traditional transformer encoder was its training task. It's crucial to remember that the encoder-decoder transformer model of 2017 was training with the objective of next word prediction, which while suited for that type of task, was suboptimal for a holistic understanding of context. BERT proposed a new objective: <strong>masked lanuage modeling (MLM)</strong>, which benefitted from fully bidirectional context, and better word representation. With MLM, BERT is trained by randomly masking out a subset of input words (typically ~15%) and asking the model to predict the original words based on the full, unmasked context. For example, the sentence _"I like [MASK] coffee"_ might appear in training-- the model is tasked with recovering the missing word ("black") by attending to the left ("I like") and right ("coffee") contexts. This is what we mean by "bidirectional." The loss function of MLM is simply cross-entropy applied only at the masked positions.
 
-![IMG_EBF0FD24F981-1](https://github.com/user-attachments/assets/26b90613-232e-42ff-b58f-d1be2135426e)
+<img src="https://github.com/user-attachments/assets/26b90613-232e-42ff-b58f-d1be2135426e" alt="IMG_EBF0FD24F981-1" width="50%">
 
 In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT model relationships more macroscopically at the sentence level. 
 
