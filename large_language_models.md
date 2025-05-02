@@ -82,7 +82,7 @@ The original GPT was trained in two stages: first, a large-scaled unsupervised l
 ### Pre-Training
 In pre-training, LLMs are trained on a massive corpus of unstructured text data using the causal language modeling objective, which simply minimizes cross-entropy, the negative log-likelihood of the actual words across a dataset, where $x_t$ is the next word:
 
-$$ \mathcal{L}_{pre-train} = -\sum_{t=1}^{n}\log P(x_t | x_1, x_2, \dots, x_t).$$ 
+$$𝓛_{pre-train} = -∑_{t=1}^n \log P(x_t | x_1, x_2, ..., x_t)$$
 
 How is this computed in practice during training? $n$ is a hyperparameter called the _context window_ or _context length_, and it specifies how many words the model can attend to in a forward pass. Every article, every piece of text that the LLM sees is broken up into these $n$-sized chunks and that is what specifies the size of our input to the model. Recall, however, that we compute the joint distribution $P(x_t | x_1, x_2, \dots, x_t)$ by explicitly expanding it via the chain rule of probabilities-- it's important to remember that we are indeed also computing $P(x_2|x_1), P(x_3|x_1, x_2),$ and so on. Think of the context window as the maximum length of a sequence that the model sees, but that it indeed calculates many other subsequences as it moves from left to right thanks to masked self-attention Therefore, even though our context window might be 1,024 or 8,000 words, we know perfectly well how to deal with short inputs like "I like black coffee".
 
