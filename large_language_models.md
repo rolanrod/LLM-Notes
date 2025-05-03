@@ -4,7 +4,7 @@ _Note: knowledge of attention and transformer architecture by the reader is assu
 ## Introduction to Large Language Models
 Large language models have taken the world by storm as the pioneering technology of the AI boom of the 2020s, but what are they and what makes them so special? Text generation is not a new phenomenon-- we have already learned about statistical methods like n-grams (Brown et al., 1990) and nascent deep learning algorithms like LSTM (Hochreiter & Schmidhuber, et al., 1997)-- yet the advent of LLMs like OpenAI's GPT has propelled artificial intelligence into the global spotlight.
 
-Put plainly, a large language model is a machine learning model trained on vast amounts of text data to understand and generate human language. Typically on the order of billions of _parameters_ (a word meaning nothing more than learnable weights and biases) in size, LLMs are used as chatbots, translators, summarizers, and for all sorts of text-based tasks.
+Put plainly, a large language model is a machine learning model trained on vast amounts of text data to understand and generate natural language. Typically on the order of billions of _parameters_ (a word synonymous with learnable weights and biases) in size, LLMs are used as chatbots, translators, summarizers, and for all sorts of text-based tasks.
 
 There are many main players in the story of large language models, but perhaps none more important than the marriage of the transformer, the deep learning architecture powered by the attention mechanism, and the graphics processing unit (GPU). Natural language processing was made into a parallelizable matrix multiplication problem with _Attention is All You Need_ in 2017, and NVIDIA's market cap has grown by a factor of thirtyfold since its publishing at the time these notes have been compiled.
 
@@ -65,7 +65,7 @@ Why did GPTs ditch encoders? Recall what encoders are used for in the first plac
   <img src="https://github.com/user-attachments/assets/1c99fd69-488a-4361-91ed-ce8c382dcefa" alt="IMG_44C267C705EE-1" width="200">
 </p>
 
-At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input \<START> "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". This no-looking-ahead mechanism is referred to as a causal mask and, as you might imagine, looks like a triangular matrix with zeros to the right of the diagonal.
+At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". This no-looking-ahead mechanism is referred to as a causal mask and, as you might imagine, looks like a triangular matrix with zeros to the right of the diagonal.
 
 Besides the omission of the encoder and cross-attention, nothing is new about GPT architecture: word and positonal embeddings added together, passed through several decoder layers (masked self-attention and feed-forward networks), through a linear classifier that projects embeddings into wordspace, and finally through a softmax that outputs a categorical distribution over the vocabulary. As soon as the next word is sampled, it is concatenated to the original input and the process repeats.
 
@@ -147,8 +147,14 @@ D. to store the value of C[i - 1].
 What happened here is that GPT-3 says to itself, "Ah, I've seen this exact question on the 2014 AP Computer Science A exam; I know what comes next!" and it proceeds to spit out what indeed came next, but not what we want from it. Base-models this big can memorize very well, and actions need to be taken to move them away from this behavior.
 
 
-### Fine-Tuning and Post-Training
-In the earliest versions of GPT and BERT, this general-purpose knowledge was just the first step. To 
+### Post-Training
+Post-training is the set of techniques applied after pre-training to make a model useful, aligned, and safe for human interaction. While zero-shot and one-shot learning largely did away with having to fine-tune to acquire different capabilities, there were still a lot of rough edges to attend to, as we saw with the coding question scenario.
+
+_Instruction tuning_ was popularized by InstructGPT, a 2022 variant of GPT-3, that was fine-tuned on a dataset of just 12,000 samples of instruction-response pairs, simply a dataset of questions and answers. This was an important step in eliminating the unhelpful completions like literal A-B-C-D multiple choice outputs or continuations that ignored the user's intent. Instead, the model learned to interpret a wide range of natural prompts and resoond more helpfully.
+
+Nevertheless, it was just a first step, and much more was needed to get toward responses that humans were satisfied with. Even when trained on good examples, the model could still produce technically plausible but subtlty wrong answers, or respond in way that were verbose and misaligned with user preferences. Tasks like language modeling are inherently subtle and ambiguous, and ultimately rely on human preference-- something difficult to quantify. How do you measure the quality of word choice or if an explanation is clear or condescending? There aren't objective metrics for these things, but humans can generally agree that phrases like, "Now this might be a bit hard for you to understand, but..." are indeed pretty condescending.
+
+And so, humans were brought directly into the training process with _reinforcement learning from human feedback_ (RLHF), which allowed for preference to be formalized in a reinforcement learning. Human annotators ranked muliple completions for the same prompt that ultimately guided a reward model that guided the model toward outputs more consistent with human taste, helpfulness, and factuality-- this is exactly what LLMs are asking for if you ever recall being asked to choose between two answers in your personal use of a model. Reinforcement learning and RLHF will be covered in more detail in the latter half of the course.
 
 
 ## Social Ramifications of Large Language Models
