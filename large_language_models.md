@@ -37,8 +37,13 @@ In addition to MLM, the original BERT paper also introduced a next stentence pre
 
 Once trained on a large corpus, BERT is _fine-tuned_ on specific tasks by adding a small classificaiton head on top of the final encoder output. During this phase, the network is updated using labeled data for tasks. More on this pipeline later.
 
+![IMG_D0056EF8F59B-1](https://github.com/user-attachments/assets/e6c5091d-ed47-43b7-ac95-785ceb230a0b)
+
+
 ### T5/BART
 Google Research released T5 (Text-to-Text Transfer Transformer) in 2019 and was based on the original encoder-decoder model of the original transformer.
+
+![IMG_CE90673FB270-1](https://github.com/user-attachments/assets/5feb9404-beb5-440e-a675-5c0e7c3d38b4)
 
 ### GPT
 The Generative Pre-trained Transformer (GPT) was introduced by OpenAI in 2018 as a decoder-only transformer architecture-- no encoder, and no cross-attention. In many ways, GPTs depart from the "transforming" of text that the vanilla transformer was made for (translation, most notably) and double-down on text generation through _autoregressive next-word prediction_, which is simply the process of sequentially taking outputs and feeding them back through the model at every iteration. 
@@ -51,7 +56,7 @@ When there are probabilities, there are probability distributions, and this prob
 
 Why did GPTs ditch encoders? Recall what encoders are used for in the first place: capturing contextual relationships between all words bidirectionally (previous and future words). GPTs don't want this, and they explicitly block access to future words as they generate in real-time using _masked (causal) self-attention_ in each transformer block. Think of the original task of the transformer of translating text from one language to another, where we first need to understand (encode) what the original language is saying and then produce an output (decode) in another language. With GPTs, we are just generating text and all we need to do this best is the context sequence we already have.
 
-[[[INSERT GPT IMAGE OR COMPARING TRANSLATION TO TEXT-GENERATION]]]
+![IMG_44C267C705EE-1](https://github.com/user-attachments/assets/1c99fd69-488a-4361-91ed-ce8c382dcefa)
 
 At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input \<START> "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". This no-looking-ahead mechanism is referred to as a causal mask and, as you might imagine, looks like a triangular matrix with zeros to the right of the diagonal.
 
