@@ -40,7 +40,7 @@ In addition to MLM, the original BERT paper also introduced a next stentence pre
 Once trained on a large corpus, BERT is _fine-tuned_ on specific tasks by adding a small classificaiton head on top of the final encoder output. During this phase, the network is updated using labeled data for tasks. More on this pipeline later.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/e6c5091d-ed47-43b7-ac95-785ceb230a0b" alt="IMG_D0056EF8F59B-1" width="200">
+  <img src="https://github.com/user-attachments/assets/e6c5091d-ed47-43b7-ac95-785ceb230a0b" alt="IMG_D0056EF8F59B-1" width="450">
 </p>
 
 ### T5/BART
@@ -94,7 +94,7 @@ These relationships revealed that model loss could be predictably reduced byscal
 OpenAI put everything they had behind these findings and cranked up scale wildly. GPT-3, released in 2020, was over one-hundred times larger than GPT-2 at 175 billion parameters and over 300 billion tokens of data (more on tokens later). Emergent behavior began to appear with greater regularity: GPT-3 could perform multi-step arithmetic, solve analogy problems, write code, and complete SAT-style reading comprehension questions with minimal prompting. The ability to interpret and act on a task description with minimal instruction (zero- or one-shot) gave the model a special kind of flexibility that allowed it to adapt to new problems with nothing more than the right prompt phrasing needed. GPT-3 had not mastered each task individually, but it had been so relentlessly trained to predict the next token correctly across a vast range of contexts that it implicitly had to learn the abstract patterns of logic and instruction-following needed to solve different types of problems.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3c61e95c-7396-409c-bc37-c0360b1aff86" alt="IMG_E5369BB463C6-1" width="200">
+  <img src="https://github.com/user-attachments/assets/3c61e95c-7396-409c-bc37-c0360b1aff86" alt="IMG_E5369BB463C6-1" width="450">
 </p>
 
 You might have been surprised to learn that GPT-3 was released in 2020 given that it was the model behind ChatGPT, which really caught on in late 2022 and early 2023. But the original GPT-3, powerful as it was, was still a base-model, trained purely on predicting the next token in a sequence with no explicit goal beyond minimizing language modeling loss. While the model showed that it didn't need any fine-tuning, the gap between usability and capability brought the need for _post-training_, which helped modify behavior that made a powerful but clumsy base model into a genuinely useful tool.
@@ -156,5 +156,6 @@ Nevertheless, it was just a first step, and much more was needed to get toward r
 
 And so, humans were brought directly into the training process with _reinforcement learning from human feedback_ (RLHF), which allowed for preference to be formalized in a reinforcement learning. Human annotators ranked muliple completions for the same prompt that ultimately guided a reward model that guided the model toward outputs more consistent with human taste, helpfulness, and factuality-- this is exactly what LLMs are asking for if you ever recall being asked to choose between two answers in your personal use of a model. Reinforcement learning and RLHF will be covered in more detail in the latter half of the course.
 
-
+<p align="center"><img width="500" alt="Screenshot 2025-05-03 at 5 02 53 PM" src="https://github.com/user-attachments/assets/6eecf2ad-ec3d-49b7-800c-963f0fd46b8d"/></p>
+<p align="center"> <i>InstructGPT</i>, Ouyang, et. al 2022_</p>
 ## Social Ramifications of Large Language Models
