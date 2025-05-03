@@ -68,7 +68,18 @@ Part of what made GPT-2 truly remarkable was not merely its scale (ten times the
 
 This observation formed the basis of what are now called _scaling laws_, empirical trends that demonstrated that as the number of parameters, size of training set, and amount of compute were increased, a model's performance improved smoothly and predictably. It suddenly became clear that sheer scale was a primary driver of emergent capability.
 
-[[INSERT SCALING LAWS IMAGE AND POWER LAW FORMULAS]]
+Two relationships have been proposed to capture these scaling trends. The first is a formula for compute cost:
+
+$$ C = C_0ND,$$
+
+where $C$ is the total compute required, $N$ is the number of model parameters, $D$ is the number of training tokens (our data), and a constant $C_0$ that absorbs architectural and hardware-specific efficiency. The formula tells us that compute cost grows linearly with both model size and dataset size, meaning that if you want to double your model and double your data, you'll need roughly four times the compute.
+
+The second is a power-law approximation for model loss:
+$$ L = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + L_0.$$
+
+Here, $L$ is the test-loss, and the formula shows diminishing returns: as you increase $N$ and $D$, the model's loss decreases following an inverse power-law. The constants $A$, $B$, and $L_0$ capture irreducible error and dataset/model specific, while $\alpha$ and $\beta$  (usually ~0.07-0.1) describe how efficiently performance improves with scale.
+
+These relationships revealed that model loss could be predictably reduced byscaling up either the number of parameters and the amount of training data. While the returns eventually slow, the formulas made it clear that with enough compute, one could always drive the loss lower by increasing either model size or dataset size.
 
 OpenAI put everything they had behind these findings and cranked up scale wildly. GPT-3, released in 2020, was over one-hundred times larger than GPT-2 at 175 billion parameters and over 300 billion tokens of data (more on tokens later). Emergent behavior began to appear with greater regularity: GPT-3 could perform multi-step arithmetic, solve analogy problems, write code, and complete SAT-style reading comprehension questions with minimal prompting. The ability to interpret and act on a task description with minimal instruction (zero- or one-shot) gave the model a special kind of flexibility that allowed it to adapt to new problems with nothing more than the right prompt phrasing needed. GPT-3 had not mastered each task individually, but it had been so relentlessly trained to predict the next token correctly across a vast range of contexts that it implicitly had to learn the abstract patterns of logic and instruction-following needed to solve different types of problems.
 
@@ -95,7 +106,6 @@ So far, we've been referring to these $x$ vectors as words, but that's actually 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/fd9ace6c-b1d5-4887-b852-27dac7280418" alt="IMG_8880EF7BE6B7-1" width="90%">
 </p>
-
 
 
 The pre-training phase is the workhorse of building a large language model. By learning to predict the next word over billions of tokens, LLMs acquire a broad understanding of grammar, syntax, word meanings and relationships, facts, and long-range dependencies. The result of a converged pretrained model is the _base model_. While they might have the full knowledge of the dataset they were trained on baked into their weights, it's crucial to understand that <strong>base models are not assistants, nor chatbots.</strong> If you download the weights of a base model like LLaMA-2-7B and provide a text input like, "What's 10 / 5?" you might be surprised to find that you not get an answer like, "2" or "10 / 5 is 2." Instead, you're more likely to get something along the lines of, "We know the answer to this question is 2, this represents a basic mathematical truth. Mathematical truths are an example of objective knowledge that are necessarily true, and it is indeed impossible to think of the answer of being anything other than 2. Kant argued that mathematical truths are synthetic a priori, and that these types of truths are..." and so on. Base models are nothing more than a compression of their datasets, and if you feed them input, they will just keep on sampling from learned probability distributions ad infinitum, certainly with no particular orientation towards helping you solve a problem. 
