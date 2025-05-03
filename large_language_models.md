@@ -14,10 +14,7 @@ In the first part of these notes, we'll explore the major families of large lang
 
 ## Transformer Models
 ### BERT
-BERT (Bidirectional Encoder Representation) was introduced in 2018 as a transformer-based model developed by Google and offered a major leap in natural language understanding. Before we speak about the specifics of BERT, it's important to clear up a common misunderstanding: 
-<div align="center" style="padding-bottom:10px;">
-  <strong>GPTs are a subset of LLMs, but they are not interchangeable terms.</strong>
-</div>
+BERT (Bidirectional Encoder Representation) was introduced in 2018 as a transformer-based model developed by Google and offered a major leap in natural language understanding. Before we speak about the specifics of BERT, it's important to clear up a common misunderstanding: <strong>GPTs are a subset of LLMs, but they are not interchangeable terms.</strong>
 
 As mentioned in the introduction, there are several transformer models that can be considered "large language models," BERT among them. As we'll see, LLMs are not strictly generative, and models like BERT were made not with the intention to produce text but to, as the name suggests, form rich encoder representations as contextual embeddings.
 
@@ -85,7 +82,7 @@ $$ C = C_0ND,$$
 where $C$ is the total compute required, $N$ is the number of model parameters, $D$ is the number of training tokens (our data), and a constant $C_0$ that absorbs architectural and hardware-specific efficiency. The formula tells us that compute cost grows linearly with both model size and dataset size, meaning that if you want to double your model and double your data, you'll need roughly four times the compute.
 
 The second is a power-law approximation for model loss:
-$$ L = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + L_0.$$
+$$ L = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + L_0. $$
 
 Here, $L$ is the test-loss, and the formula shows diminishing returns: as you increase $N$ and $D$, the model's loss decreases following an inverse power-law. The constants $A$, $B$, and $L_0$ capture irreducible error and dataset/model specific, while $\alpha$ and $\beta$  (usually ~0.07-0.1) describe how efficiently performance improves with scale.
 
