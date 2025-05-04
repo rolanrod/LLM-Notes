@@ -28,18 +28,24 @@ BERT uses only the encoder half of the transformer architecture to produce this 
 
 The key innovation of BERT that set it apart from the traditional transformer encoder was its training task. It's crucial to remember that the encoder-decoder transformer model of 2017 was training with the objective of next word prediction, which while suited for that type of task, was suboptimal for a holistic understanding of context. BERT proposed a new objective: <strong>masked lanuage modeling (MLM)</strong>, which benefitted from fully bidirectional context, and better word representation. With MLM, BERT is trained by randomly masking out a subset of input words (typically ~15%) and asking the model to predict the original words based on the full, unmasked context. For example, the sentence _"I like [MASK] coffee"_ might appear in training-- the model is tasked with recovering the missing word ("black") by attending to the left ("I like") and right ("coffee") contexts. This is what we mean by "bidirectional." The loss function of MLM is simply cross-entropy applied only at the masked positions.
 
-![JPEG image-4B11-B40E-FC-0](https://github.com/user-attachments/assets/92c47ac8-c3c1-40ca-9e8f-286823918b86)
+<div style="text-align: center;">
+    <img src="https://github.com/user-attachments/assets/92c47ac8-c3c1-40ca-9e8f-286823918b86" width="500px" alt="JPEG image-4B11-B40E-FC-0">
+</div>
 
 In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT capture relationships more macroscopically at the sentence level. 
 
 Once trained on a large corpus, BERT is _fine-tuned_ on specific tasks by adding a small classification head on top of the final encoder output. During this phase, the network is updated using labeled data for tasks. More on this pipeline later.
 
-![JPEG image-49F5-84D5-30-0](https://github.com/user-attachments/assets/3300ac6d-5059-4346-8ec9-6f05b5bf711e)
+<div style="text-align: center;">
+    <img src="https://github.com/user-attachments/assets/3300ac6d-5059-4346-8ec9-6f05b5bf711e" width="500px" alt="JPEG image-49F5-84D5-30-0">
+</div>
 
 ### T5/BART
 Google Research released T5 (Text-to-Text Transfer Transformer) in 2019 and was based on the original encoder-decoder model of the original transformer.
 
-![JPEG image-4BEA-92E3-99-0](https://github.com/user-attachments/assets/2de718a0-b324-4d85-9a19-ec01ca1131b3)
+<div style="text-align: center;">
+    <img src="https://github.com/user-attachments/assets/2de718a0-b324-4d85-9a19-ec01ca1131b3" width="500px" alt="JPEG image-4BEA-92E3-99-0">
+</div>
 
 ### GPT
 The Generative Pre-trained Transformer (GPT) was introduced by OpenAI in 2018 as a decoder-only transformer architecture-- no encoder, and no cross-attention. In many ways, GPTs depart from the "transforming" of text that the vanilla transformer was made for (translation, most notably) and double-down on text generation through _autoregressive next-word prediction_, which is simply the process making predictions and sequentially feeding them back through the model at every iteration, yielding a sequence that grows from left to right. 
@@ -52,11 +58,15 @@ When there are probabilities, there are probability distributions, and this dist
 
 Why did GPTs ditch encoders? Recall what encoders are used for in the first place: capturing contextual relationships between all words bidirectionally (previous and future words). GPTs don't want this, and they explicitly block access to future words as they generate in real-time using _masked (causal) self-attention_ in each transformer block. Think of the original task of the transformer of translating text from one language to another, where we first need to understand (encode) what the original language is saying and then produce an output (decode) in another language. With GPTs, we are just generating text and all we need is the context sequence we already have.
 
-![JPEG image-4D20-8895-07-0](https://github.com/user-attachments/assets/d5e106e8-148e-46ad-9bc4-b8b9a7893ff4)
+<div style="text-align: center;">
+    <img src="https://github.com/user-attachments/assets/d5e106e8-148e-46ad-9bc4-b8b9a7893ff4" width="500px" alt="JPEG image-4D20-8895-07-0">
+</div>
 
 At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". This no-looking-ahead mechanism is referred to as a causal mask and, as you might imagine, looks like a triangular matrix with zeros to the right of the diagonal.
 
-![JPEG image-4166-AFF5-60-0](https://github.com/user-attachments/assets/3ad356e5-f259-450e-8aab-4d9082c2a890)
+<div style="text-align: center;">
+    <img src="https://github.com/user-attachments/assets/3ad356e5-f259-450e-8aab-4d9082c2a890" width="500px" alt="JPEG image-4166-AFF5-60-0">
+</div>
 
 Besides the omission of the encoder and cross-attention, nothing is new about GPT architecture: word and positonal embeddings added together, passed through several decoder layers (masked self-attention and feed-forward networks), through a linear classifier that projects embeddings into wordspace, and finally through a softmax that outputs a categorical distribution over the vocabulary. As soon as the next word is sampled, it is concatenated to the original input and the process repeats.
 
@@ -83,7 +93,9 @@ These relationships revealed that model loss could be predictably reduced by sca
 
 OpenAI put everything they had behind these findings and cranked up scale wildly. GPT-3, released in 2020, was over one-hundred times larger than GPT-2 at 175 billion parameters and was trained on over 300 billion tokens of data (more on tokens later). Emergent behavior began to appear with greater regularity: GPT-3 could perform multi-step arithmetic, solve analogy problems, write code, and complete SAT-style reading comprehension questions with minimal prompting. The ability to interpret and act on a task description with minimal instruction (zero- or one-shot) gave the model a special kind of flexibility that allowed it to adapt to new problems with nothing more than the right prompt phrasing needed. GPT-3 had not mastered each task individually, but it had been so relentlessly trained to predict the next token correctly across a vast range of contexts that it implicitly had to learn the abstract patterns of logic and instruction-following needed to solve different types of problems.
 
-![JPEG image-468C-B4AF-41-0](https://github.com/user-attachments/assets/d0530bf3-46db-4010-b19d-b720c9d7c1f8)
+<div style="text-align: center;">
+    <img src="https://github.com/user-attachments/assets/d0530bf3-46db-4010-b19d-b720c9d7c1f8" width="500px" alt="JPEG image-468C-B4AF-41-0">
+</div>
 
 In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT model relationships more macroscopically at the sentence level. 
 
