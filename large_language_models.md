@@ -95,6 +95,13 @@ OpenAI put everything they had behind these findings and cranked up scale wildly
   <img src="https://github.com/user-attachments/assets/3c61e95c-7396-409c-bc37-c0360b1aff86" alt="IMG_E5369BB463C6-1" width="450">
 </p>
 
+In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT model relationships more macroscopically at the sentence level. 
+
+BERT’s true impact came not just from its architecture, but from the pre-train + fine-tune paradigm it popularized. Once pretrained on massive corpora (Wikipedia and BookCorpus), BERT could be _fine-tuned_ with minimal task-specific data by attaching lightweight heads to the model for classification, question answering, or token-level tasks like named entity recognition. This transfer learning approach led to state-of-the-art results on benchmarks like GLUE and SQuAD at the time of release.
+
+While BERT set a new standard, it had limitations: it was not generative and the NSP objective was later shown to be of limited value. Successors like RoBERTa removed NSP and used dynamic masking, DistilBERT compressed BERT via knowledge distillation for speed, and ALBERT reduced parameter count by sharing weights across layers.
+
+Together, these developments solidified BERT’s legacy as a foundation of modern natural language understanding, even as generative models like GPT and encoder-decoder models like T5 expanded the frontier.
 
 ## Pre-Training + Post-Training: How to Build a Large Language Model
 The original GPT was trained in two stages: first, a large-scaled unsupervised language modeling phase, referred to as _pre-training_, and a second supervised _post-training_ phase on specific downstream tasks like question answering. 
@@ -156,4 +163,9 @@ And so, humans were brought directly into the training process with _reinforceme
 
 <p align="center"><img width="500" alt="Screenshot 2025-05-03 at 5 02 53 PM" src="https://github.com/user-attachments/assets/6eecf2ad-ec3d-49b7-800c-963f0fd46b8d"/></p>
 <p align="center"> <i>InstructGPT</i>, Ouyang, et. al 2022_</p>
+
+RLHF laid the groundwork for post-training to build off of, and it continued to get better and better. Researchers realized that how you prompt the model could make a surprising difference in reasoning performance. In a technique called chain-of-thought prompting, simply adding intermediate steps—- like saying, “Let’s think step-by-step”—caused models to dramatically improve on arithmetic, logic, and common-sense reasoning tasks. These cues help the model unfold its internal "reasoning" across multiple tokens, rather than jumping straight to a potentially flawed conclusion. Arithmetic could still be clunky and prone to error in early LLMs until researchers made what in retrospect seemed an obvious move of just allowing models to use calculators; instead of trying to predict what followed "77 + 33 = ", those tokens were just replaced with an API call to a calculator. This strategy, dubbed _Toolformer_, was eventually extended to other external tools like search engines and translation APIs. Instead of trying to memorize everything, the model learns to delegate too.
+
+Despite these advances, _hallucinations_ remain a major challenge. LLMs sometimes generate text that is syntactically and stylistically correct but factually wrong, such as inventing citations, quoting fake laws, or providing incorrect historical dates. These hallucinations stem from the fact that the model is fundamentally trained to predict likely sequences, not to verify facts. Even post-training cannot fully eliminate hallucinations, though techniques like retrieval-augmented generation, better RLHF reward models, and external tool use help reduce them.
+
 ## Social Ramifications of Large Language Models
