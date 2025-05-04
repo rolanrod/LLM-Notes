@@ -14,10 +14,7 @@ In the first part of these notes, we'll explore the major families of large lang
 
 ## Transformer Models
 ### BERT
-BERT (Bidirectional Encoder Representation) was introduced in 2018 as a transformer-based model developed by Google and offered a major leap in natural language understanding (NLU). Before we speak about the specifics of BERT, it's important to clear up a common misunderstanding: 
-<div align="center" style="padding-bottom:10px;">
-  <strong>GPTs are a subset of LLMs, but they are not interchangeable terms.</strong>
-</div>
+BERT (Bidirectional Encoder Representation) was introduced in 2018 as a transformer-based model developed by Google and offered a major leap in natural language understanding. Before we speak about the specifics of BERT, it's important to clear up a common misunderstanding: <strong>GPTs are a subset of LLMs, but they are not interchangeable terms.</strong>
 
 As mentioned in the introduction, there are several transformer models that can be considered "large language models," BERT among them. As we'll see, LLMs are not strictly generative, and models like BERT were made not with the intention to produce text but to, as the name suggests, form rich encoder representations as contextual embeddings.
 
@@ -40,7 +37,7 @@ In addition to MLM, the original BERT paper also introduced a next stentence pre
 Once trained on a large corpus, BERT is _fine-tuned_ on specific tasks by adding a small classification head on top of the final encoder output. During this phase, the network is updated using labeled data for tasks. More on this pipeline later.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/e6c5091d-ed47-43b7-ac95-785ceb230a0b" alt="IMG_D0056EF8F59B-1" width="200">
+  <img src="https://github.com/user-attachments/assets/e6c5091d-ed47-43b7-ac95-785ceb230a0b" alt="IMG_D0056EF8F59B-1" width="450">
 </p>
 
 ### T5/BART
@@ -67,6 +64,8 @@ Why did GPTs ditch encoders? Recall what encoders are used for in the first plac
 
 At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". This no-looking-ahead mechanism is referred to as a causal mask and, as you might imagine, looks like a triangular matrix with zeros to the right of the diagonal.
 
+[masked self attention image]
+
 Besides the omission of the encoder and cross-attention, nothing is new about GPT architecture: word and positonal embeddings added together, passed through several decoder layers (masked self-attention and feed-forward networks), through a linear classifier that projects embeddings into wordspace, and finally through a softmax that outputs a categorical distribution over the vocabulary. As soon as the next word is sampled, it is concatenated to the original input and the process repeats.
 
 
@@ -84,7 +83,7 @@ $$ C = C_0ND,$$
 where $C$ is the total compute required, $N$ is the number of model parameters, $D$ is the number of training tokens (our data), and a constant $C_0$ that absorbs architectural and hardware-specific efficiency. The formula tells us that compute cost grows linearly with both model size and dataset size, meaning that if you want to double your model and double your data, you'll need roughly four times the compute.
 
 The second is a power-law approximation for model loss:
-$$ L = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + L_0.$$
+$$ L = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + L_0. $$
 
 Here, $L$ is the test-loss, and the formula shows diminishing returns: as you increase $N$ and $D$, the model's loss decreases following an inverse power-law. The constants $A$, $B$, and $L_0$ capture irreducible error and dataset/model specifics, while $\alpha$ and $\beta$  (usually ~0.07-0.1) describe how efficiently performance improves with scale.
 
@@ -93,7 +92,7 @@ These relationships revealed that model loss could be predictably reduced by sca
 OpenAI put everything they had behind these findings and cranked up scale wildly. GPT-3, released in 2020, was over one-hundred times larger than GPT-2 at 175 billion parameters and was trained on over 300 billion tokens of data (more on tokens later). Emergent behavior began to appear with greater regularity: GPT-3 could perform multi-step arithmetic, solve analogy problems, write code, and complete SAT-style reading comprehension questions with minimal prompting. The ability to interpret and act on a task description with minimal instruction (zero- or one-shot) gave the model a special kind of flexibility that allowed it to adapt to new problems with nothing more than the right prompt phrasing needed. GPT-3 had not mastered each task individually, but it had been so relentlessly trained to predict the next token correctly across a vast range of contexts that it implicitly had to learn the abstract patterns of logic and instruction-following needed to solve different types of problems.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3c61e95c-7396-409c-bc37-c0360b1aff86" alt="IMG_E5369BB463C6-1" width="200">
+  <img src="https://github.com/user-attachments/assets/3c61e95c-7396-409c-bc37-c0360b1aff86" alt="IMG_E5369BB463C6-1" width="450">
 </p>
 
 
@@ -155,5 +154,6 @@ Nevertheless, it was just a first step, and much more was needed to get toward r
 
 And so, humans were brought directly into the training process with _reinforcement learning from human feedback_ (RLHF), which allowed for preference to be formalized in a reinforcement learning setting. Human annotators ranked muliple completions for the same prompt that ultimately guided a reward model that guided the LLM toward outputs more consistent with human taste, helpfulness, and factuality-- this is exactly what LLMs are asking for if you ever recall being asked to choose between two outputted answers. Reinforcement learning and RLHF will be covered in more detail in the latter half of the course.
 
-
+<p align="center"><img width="500" alt="Screenshot 2025-05-03 at 5 02 53 PM" src="https://github.com/user-attachments/assets/6eecf2ad-ec3d-49b7-800c-963f0fd46b8d"/></p>
+<p align="center"> <i>InstructGPT</i>, Ouyang, et. al 2022_</p>
 ## Social Ramifications of Large Language Models
