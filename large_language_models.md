@@ -40,8 +40,9 @@ While BERT set a new standard, it had limitations: it was not generative and the
 
 Together, these developments solidified BERT’s legacy as a foundation of modern natural language understanding, even as generative models like GPT and encoder-decoder models like T5 expanded the frontier.
 
+
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/3300ac6d-5059-4346-8ec9-6f05b5bf711e" width="500px">
+    <img src="https://github.com/user-attachments/assets/284c511e-90e8-4724-aeef-49335668798a" width="500px">
 </p>
 
 ### T5/BART
@@ -54,7 +55,7 @@ Unlike the original transformer, which had different heads and output formats fo
 This objective encourages the model not just to guess masked tokens but to reconstruct coherent, semantically meaningful spans. In a sense, it's applying the intuition behind BERT in a generative setting. 
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/2de718a0-b324-4d85-9a19-ec01ca1131b3" width="500px">
+    <img src="https://github.com/user-attachments/assets/8939d725-15f9-490f-acbe-f331b6080586" width="500px">
 </p>
 
 Around the same time, Facebook AI released BART (Bidirectional and Auto-Regressive Transformers), which also adopted encoder-decoder transformer architecture with a distinct approach to training. BART employed a more diverse set of corruption techniques that included masking, sentence permutation, and word deletion and insertion.
