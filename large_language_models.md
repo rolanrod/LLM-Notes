@@ -40,9 +40,8 @@ While BERT set a new standard, it had limitations: it was not generative and the
 
 Together, these developments solidified BERT’s legacy as a foundation of modern natural language understanding, even as generative models like GPT and encoder-decoder models like T5 expanded the frontier.
 
-
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/284c511e-90e8-4724-aeef-49335668798a" width="500px">
+    <img src="https://github.com/user-attachments/assets/c2828162-7684-4860-8e4c-542d2e4bbd72" width="500px">
 </p>
 
 ### T5/BART
