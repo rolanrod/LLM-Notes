@@ -29,7 +29,7 @@ BERT uses only the encoder half of the transformer architecture to produce this 
 The key innovation of BERT that set it apart from the traditional transformer encoder was its training task. It's crucial to remember that the encoder-decoder transformer model of 2017 was training with the objective of next word prediction, which while suited for that type of task, was suboptimal for a holistic understanding of context. BERT proposed a new objective: *masked lanuage modeling (MLM)*, which benefitted from fully bidirectional context, and better word representation. With MLM, BERT is trained by randomly masking out a subset of input words (typically ~15%) and asking the model to predict the original words based on the full, unmasked context. For example, the sentence _"I like [MASK] coffee"_ might appear in training-- the model is tasked with recovering the missing word ("black") by attending to the left ("I like") and right ("coffee") contexts. This is what we mean by "bidirectional." The loss function of MLM is simply cross-entropy applied only at the masked positions.
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/92c47ac8-c3c1-40ca-9e8f-286823918b86" width="500px" alt="JPEG image-4B11-B40E-FC-0">
+    <img src="https://github.com/user-attachments/assets/92c47ac8-c3c1-40ca-9e8f-286823918b86" width="500px">
 </p>
 
 In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT model relationships more macroscopically at the sentence level. 
@@ -41,7 +41,7 @@ While BERT set a new standard, it had limitations: it was not generative and the
 Together, these developments solidified BERT’s legacy as a foundation of modern natural language understanding, even as generative models like GPT and encoder-decoder models like T5 expanded the frontier.
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/3300ac6d-5059-4346-8ec9-6f05b5bf711e" width="500px" alt="JPEG image-49F5-84D5-30-0">
+    <img src="https://github.com/user-attachments/assets/3300ac6d-5059-4346-8ec9-6f05b5bf711e" width="500px">
 </p>
 
 ### T5/BART
@@ -54,7 +54,7 @@ Unlike the original transformer, which had different heads and output formats fo
 This objective encourages the model not just to guess masked tokens but to reconstruct coherent, semantically meaningful spans. In a sense, it's applying the intuition behind BERT in a generative setting. 
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/2de718a0-b324-4d85-9a19-ec01ca1131b3" width="500px" alt="JPEG image-4BEA-92E3-99-0">
+    <img src="https://github.com/user-attachments/assets/2de718a0-b324-4d85-9a19-ec01ca1131b3" width="500px">
 </p>
 
 Around the same time, Facebook AI released BART (Bidirectional and Auto-Regressive Transformers), which also adopted encoder-decoder transformer architecture with a distinct approach to training. BART employed a more diverse set of corruption techniques that included masking, sentence permutation, and word deletion and insertion.
@@ -74,13 +74,13 @@ When there are probabilities, there are probability distributions, and this dist
 Why did GPTs ditch encoders? Recall what encoders are used for in the first place: capturing contextual relationships between all words bidirectionally (previous and future words). GPTs don't want this, and they explicitly block access to future words as they generate in real-time using _masked (causal) self-attention_ in each transformer block. Think of the original task of the transformer of translating text from one language to another, where we first need to understand (encode) what the original language is saying and then produce an output (decode) in another language. With GPTs, we are just generating text and all we need is the context sequence we already have.
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/d5e106e8-148e-46ad-9bc4-b8b9a7893ff4" width="500px" alt="JPEG image-4D20-8895-07-0">
+    <img src="https://github.com/user-attachments/assets/d5e106e8-148e-46ad-9bc4-b8b9a7893ff4" width="500px">
 </p>
 
 At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". This no-looking-ahead mechanism is referred to as a causal mask and, as you might imagine, looks like a triangular matrix with zeros to the right of the diagonal.
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/3ad356e5-f259-450e-8aab-4d9082c2a890" width="500px" alt="JPEG image-4166-AFF5-60-0">
+    <img src="https://github.com/user-attachments/assets/3ad356e5-f259-450e-8aab-4d9082c2a890" width="500px">
 </p>
 
 Besides the omission of the encoder and cross-attention, nothing is new about GPT architecture: word and positonal embeddings added together, passed through several decoder layers (masked self-attention and feed-forward networks), through a linear classifier that projects embeddings into wordspace, and finally through a softmax that outputs a categorical distribution over the vocabulary. As soon as the next word is sampled, it is concatenated to the original input and the process repeats.
@@ -106,10 +106,15 @@ Here, $L$ is the test-loss, and the formula shows diminishing returns: as you in
 
 These relationships revealed that model loss could be predictably reduced by scaling up either the number of parameters or the amount of training data. While the returns eventually slow, the formulas made it clear that with enough compute, one could always drive the loss lower by increasing either model size or dataset size.
 
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/3586b06c-e27e-48d7-9ea8-2741516a5683" width="600">
+</p>
+<p align="center"><i>Scaling Laws for Neural Language Models</i>, Kaplan et. al 2020</p>
+
 OpenAI put everything they had behind these findings and cranked up scale wildly. GPT-3, released in 2020, was over one-hundred times larger than GPT-2 at 175 billion parameters and was trained on over 300 billion tokens of data (more on tokens later). Emergent behavior began to appear with greater regularity: GPT-3 could perform multi-step arithmetic, solve analogy problems, write code, and complete SAT-style reading comprehension questions with minimal prompting. The ability to interpret and act on a task description with minimal instruction (zero- or one-shot) gave the model a special kind of flexibility that allowed it to adapt to new problems with nothing more than the right prompt phrasing needed. GPT-3 had not mastered each task individually, but it had been so relentlessly trained to predict the next token correctly across a vast range of contexts that it implicitly had to learn the abstract patterns of logic and instruction-following needed to solve different types of problems.
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/d0530bf3-46db-4010-b19d-b720c9d7c1f8" width="500px" alt="JPEG image-468C-B4AF-41-0">
+    <img src="https://github.com/user-attachments/assets/d0530bf3-46db-4010-b19d-b720c9d7c1f8" width="500px">
 </p>
 
 
@@ -128,7 +133,7 @@ It's here where the magic of masked self-attention reveals its power during pre-
 So far, we've been referring to these $x$ vectors as words, but that's actually not how it's done in practice. Instead of operating at the level of full words, LLMs process the $x$ vectors in sequence as _tokens_, which are subword units often derived using Byte Pair Encoding (BPE). Words are split into smaller, reusable fragments (e.g. "un", "break", "able") that collectively cover language morphology. Although perhaps unintuitive to humans, _tokenization_ is hugely advantageous in providing extra granularity, reducing vocabulary size, and even handling rare or unseen words. Consider Oxford's 2022 Word of the Year: "goblinmode." For a model trained on, say, Wikipedia articles up to the year 2018, it's plausible to say that such a word might have never once appeared in the text data. Nevertheless, what tokenization essentially allows us to break down an input like "goblinmode" into "goblin" and "mode" tokens, which, when attended together might tell us about what "goblinmode" means. 
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/fd9ace6c-b1d5-4887-b852-27dac7280418" alt="IMG_8880EF7BE6B7-1" width="600">
+  <img src="https://github.com/user-attachments/assets/fd9ace6c-b1d5-4887-b852-27dac7280418" width="600">
 </p>
 
 The pre-training phase is the workhorse of building a large language model. By learning to predict the next word over billions of tokens, LLMs acquire a broad understanding of grammar, syntax, word meanings and relationships, facts, and long-range dependencies. The result of a converged pretrained model is the _base model_. While they might have the full knowledge of the dataset they were trained on baked into their weights, it's crucial to understand that *base models are not assistants nor chatbots.* If you download the weights of a base model like LLaMA-2-7B and provide a text input like, "What's 10 / 5?" you might be surprised to find that you won't get an answer like, "2" or "10 / 5 is 2." Instead, you're more likely to get something along the lines of, "We know the answer to this question is 2, this represents a basic mathematical truth. Mathematical truths are an example of objective knowledge that are necessarily true, and it is indeed impossible to think of the answer being anything other than 2. Kant argued that mathematical truths are synthetic a priori, and that these types of truths are..." and so on. Base models are nothing more than a compression of their datasets, and if you feed them input, they will just keep on sampling from learned probability distributions ad infinitum, certainly with no particular orientation towards helping you solve a problem. 
@@ -175,7 +180,7 @@ And so, humans were brought directly into the training process with _reinforceme
     <img width="500" src="https://github.com/user-attachments/assets/6eecf2ad-ec3d-49b7-800c-963f0fd46b8d"/>
 </p>
 <p align="center"> 
-    <i>InstructGPT</i>, Ouyang, et. al 2022_</p>
+    <i>InstructGPT</i>, Ouyang, et. al 2022</p>
 
 RLHF laid the groundwork for post-training to build off of, and it continued to get better and better. Researchers realized that how you prompt the model could make a surprising difference in reasoning performance. In a technique called chain-of-thought prompting, simply adding intermediate steps—- like saying, “Let’s think step-by-step”—caused models to dramatically improve on arithmetic, logic, and common-sense reasoning tasks. These cues help the model unfold its internal "reasoning" across multiple tokens, rather than jumping straight to a potentially flawed conclusion. Arithmetic could still be clunky and prone to error in early LLMs until researchers made what in retrospect seemed an obvious move of just allowing models to use calculators; instead of trying to predict what followed "77 + 33 = ", those tokens were just replaced with an API call to a calculator. This strategy, dubbed _Toolformer_, was eventually extended to other external tools like search engines and translation APIs. Instead of trying to memorize everything, the model learns to delegate too.
 
