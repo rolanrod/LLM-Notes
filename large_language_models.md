@@ -14,7 +14,7 @@ In the first part of these notes, we'll explore the major families of large lang
 
 ## Transformer Models
 ### BERT
-BERT (Bidirectional Encoder Representation) was introduced in 2018 as a transformer-based model developed by Google and offered a major leap in natural language understanding. Before we speak about the specifics of BERT, it's important to clear up a common misunderstanding: <strong>GPTs are a subset of LLMs, but they are not interchangeable terms.</strong>
+BERT (Bidirectional Encoder Representation) was introduced in 2018 as a transformer-based model developed by Google and offered a major leap in natural language understanding. Before we speak about the specifics of BERT, it's important to clear up a common misunderstanding: *GPTs are a subset of LLMs, but they are not interchangeable terms.*
 
 As mentioned in the introduction, there are several transformer models that can be considered "large language models," BERT among them. As we'll see, LLMs are not strictly generative, and models like BERT were made not with the intention to produce text but to, as the name suggests, form rich encoder representations as contextual embeddings.
 
@@ -26,26 +26,41 @@ BERT uses only the encoder half of the transformer architecture to produce this 
 
 (Note that (2) is often repeated multiple times in practice and often with LayerNorm and residual connections. This step is often abstracted into what is referred to as a transformer block-- the original BERT paper used 12)
 
-The key innovation of BERT that set it apart from the traditional transformer encoder was its training task. It's crucial to remember that the encoder-decoder transformer model of 2017 was training with the objective of next word prediction, which while suited for that type of task, was suboptimal for a holistic understanding of context. BERT proposed a new objective: <strong>masked lanuage modeling (MLM)</strong>, which benefitted from fully bidirectional context, and better word representation. With MLM, BERT is trained by randomly masking out a subset of input words (typically ~15%) and asking the model to predict the original words based on the full, unmasked context. For example, the sentence _"I like [MASK] coffee"_ might appear in training-- the model is tasked with recovering the missing word ("black") by attending to the left ("I like") and right ("coffee") contexts. This is what we mean by "bidirectional." The loss function of MLM is simply cross-entropy applied only at the masked positions.
+The key innovation of BERT that set it apart from the traditional transformer encoder was its training task. It's crucial to remember that the encoder-decoder transformer model of 2017 was training with the objective of next word prediction, which while suited for that type of task, was suboptimal for a holistic understanding of context. BERT proposed a new objective: *masked lanuage modeling (MLM)*, which benefitted from fully bidirectional context, and better word representation. With MLM, BERT is trained by randomly masking out a subset of input words (typically ~15%) and asking the model to predict the original words based on the full, unmasked context. For example, the sentence _"I like [MASK] coffee"_ might appear in training-- the model is tasked with recovering the missing word ("black") by attending to the left ("I like") and right ("coffee") contexts. This is what we mean by "bidirectional." The loss function of MLM is simply cross-entropy applied only at the masked positions.
 
 <p align="center">
     <img src="https://github.com/user-attachments/assets/92c47ac8-c3c1-40ca-9e8f-286823918b86" width="500px" alt="JPEG image-4B11-B40E-FC-0">
 </p>
 
-In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT capture relationships more macroscopically at the sentence level. 
+In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT model relationships more macroscopically at the sentence level. 
 
-Once trained on a large corpus, BERT is _fine-tuned_ on specific tasks by adding a small classification head on top of the final encoder output. During this phase, the network is updated using labeled data for tasks. More on this pipeline later.
+BERT’s true impact came not just from its architecture, but from the pre-train + fine-tune paradigm it popularized. Once pretrained on massive corpora (Wikipedia and BookCorpus), BERT could be _fine-tuned_ with minimal task-specific data by attaching lightweight heads to the model for classification, question answering, or word-level tasks like named entity recognition. This transfer learning approach led to state-of-the-art results on benchmarks like GLUE and SQuAD at the time of release.
+
+While BERT set a new standard, it had limitations: it was not generative and the NSP objective was later shown to be of limited value. Successors like RoBERTa removed NSP and used dynamic masking, DistilBERT compressed BERT via knowledge distillation for speed, and ALBERT reduced parameter count by sharing weights across layers.
+
+Together, these developments solidified BERT’s legacy as a foundation of modern natural language understanding, even as generative models like GPT and encoder-decoder models like T5 expanded the frontier.
 
 <p align="center">
     <img src="https://github.com/user-attachments/assets/3300ac6d-5059-4346-8ec9-6f05b5bf711e" width="500px" alt="JPEG image-49F5-84D5-30-0">
 </p>
 
 ### T5/BART
-Google Research released T5 (Text-to-Text Transfer Transformer) in 2019 and was based on the original encoder-decoder model of the original transformer.
+Google Research released T5 (Text-to-Text Transfer Transformer), an encoder-decoder model similar to the original transformer in 2019. It's important to remember that transformers required task-specific architectures for these things: if we wanted to use classification, we might add a softmax head over a [CLS] word embedding, or if we wanted to translate, we'd use a sequence-to-sequence decoder trained on bilingual pairs. T5 proposed a generalization: reframing everything (translation, classification, Q&A, summarization) as a text sequence generation problem. For example, classification on movie reviews are converted to text generation by having the model output labels as text (e.g., "This movie review has a negative sentiment").
+
+Unlike the original transformer, which had different heads and output formats for each task it was used for, T5 normalized all NLP tasks into *text input --> text output*. This required a carefully aligned training strategy. Instead of next-word prediction, T5 trained with a _span corruption_ objective, which was similar to MLM with some key differences. Instead of masking individual words, span corruption masks contiguous sequences of words and replaces them with "sentinel words," which the model is trained to generate in order. For instance,
+- Input: "The \<extra_id_0> sat on the \<extra_id_1>"
+- Output: \<extra_id_0> cat \<extra_id_1>  mat"
+
+This objective encourages the model not just to guess masked tokens but to reconstruct coherent, semantically meaningful spans. In a sense, it's applying the intuition behind BERT in a generative setting. 
 
 <p align="center">
     <img src="https://github.com/user-attachments/assets/2de718a0-b324-4d85-9a19-ec01ca1131b3" width="500px" alt="JPEG image-4BEA-92E3-99-0">
 </p>
+
+Around the same time, Facebook AI released BART (Bidirectional and Auto-Regressive Transformers), which also adopted encoder-decoder transformer architecture with a distinct approach to training. BART employed a more diverse set of corruption techniques that included masking, sentence permutation, and word deletion and insertion.
+
+What made T5 and BART so portable and streamlined was how efficiently they could be fine-tuned. Each of their pre-training ovjectives created models that already possessed strong general language understanding and generation capabilities, requiring only small adjustments to excel at downstream tasks. 
+
 
 ### GPT
 The Generative Pre-trained Transformer (GPT) was introduced by OpenAI in 2018 as a decoder-only transformer architecture-- no encoder, and no cross-attention. In many ways, GPTs depart from the "transforming" of text that the vanilla transformer was made for (translation, most notably) and double-down on text generation through _autoregressive next-word prediction_, which is simply the process making predictions and sequentially feeding them back through the model at every iteration, yielding a sequence that grows from left to right. 
@@ -97,13 +112,6 @@ OpenAI put everything they had behind these findings and cranked up scale wildly
     <img src="https://github.com/user-attachments/assets/d0530bf3-46db-4010-b19d-b720c9d7c1f8" width="500px" alt="JPEG image-468C-B4AF-41-0">
 </p>
 
-In addition to MLM, the original BERT paper also introduced a next stentence prediction (NSP) objective in which the model is given two segments of text and must predict whether the second segment follows the first in the original corpus. While its use has since been debated (and often removed in later models), it was initially introduced to help BERT model relationships more macroscopically at the sentence level. 
-
-BERT’s true impact came not just from its architecture, but from the pre-train + fine-tune paradigm it popularized. Once pretrained on massive corpora (Wikipedia and BookCorpus), BERT could be _fine-tuned_ with minimal task-specific data by attaching lightweight heads to the model for classification, question answering, or token-level tasks like named entity recognition. This transfer learning approach led to state-of-the-art results on benchmarks like GLUE and SQuAD at the time of release.
-
-While BERT set a new standard, it had limitations: it was not generative and the NSP objective was later shown to be of limited value. Successors like RoBERTa removed NSP and used dynamic masking, DistilBERT compressed BERT via knowledge distillation for speed, and ALBERT reduced parameter count by sharing weights across layers.
-
-Together, these developments solidified BERT’s legacy as a foundation of modern natural language understanding, even as generative models like GPT and encoder-decoder models like T5 expanded the frontier.
 
 ## Pre-Training + Post-Training: How to Build a Large Language Model
 The original GPT was trained in two stages: first, a large-scaled unsupervised language modeling phase, referred to as _pre-training_, and a second supervised _post-training_ phase on specific downstream tasks like question answering. 
@@ -123,7 +131,7 @@ So far, we've been referring to these $x$ vectors as words, but that's actually 
   <img src="https://github.com/user-attachments/assets/fd9ace6c-b1d5-4887-b852-27dac7280418" alt="IMG_8880EF7BE6B7-1" width="600">
 </p>
 
-The pre-training phase is the workhorse of building a large language model. By learning to predict the next word over billions of tokens, LLMs acquire a broad understanding of grammar, syntax, word meanings and relationships, facts, and long-range dependencies. The result of a converged pretrained model is the _base model_. While they might have the full knowledge of the dataset they were trained on baked into their weights, it's crucial to understand that <strong>base models are not assistants nor chatbots.</strong> If you download the weights of a base model like LLaMA-2-7B and provide a text input like, "What's 10 / 5?" you might be surprised to find that you won't get an answer like, "2" or "10 / 5 is 2." Instead, you're more likely to get something along the lines of, "We know the answer to this question is 2, this represents a basic mathematical truth. Mathematical truths are an example of objective knowledge that are necessarily true, and it is indeed impossible to think of the answer being anything other than 2. Kant argued that mathematical truths are synthetic a priori, and that these types of truths are..." and so on. Base models are nothing more than a compression of their datasets, and if you feed them input, they will just keep on sampling from learned probability distributions ad infinitum, certainly with no particular orientation towards helping you solve a problem. 
+The pre-training phase is the workhorse of building a large language model. By learning to predict the next word over billions of tokens, LLMs acquire a broad understanding of grammar, syntax, word meanings and relationships, facts, and long-range dependencies. The result of a converged pretrained model is the _base model_. While they might have the full knowledge of the dataset they were trained on baked into their weights, it's crucial to understand that *base models are not assistants nor chatbots.* If you download the weights of a base model like LLaMA-2-7B and provide a text input like, "What's 10 / 5?" you might be surprised to find that you won't get an answer like, "2" or "10 / 5 is 2." Instead, you're more likely to get something along the lines of, "We know the answer to this question is 2, this represents a basic mathematical truth. Mathematical truths are an example of objective knowledge that are necessarily true, and it is indeed impossible to think of the answer being anything other than 2. Kant argued that mathematical truths are synthetic a priori, and that these types of truths are..." and so on. Base models are nothing more than a compression of their datasets, and if you feed them input, they will just keep on sampling from learned probability distributions ad infinitum, certainly with no particular orientation towards helping you solve a problem. 
 
 
 Consider the following scenario, taken directly from OpenAI's user-testing on GPT-3: 
@@ -172,5 +180,3 @@ And so, humans were brought directly into the training process with _reinforceme
 RLHF laid the groundwork for post-training to build off of, and it continued to get better and better. Researchers realized that how you prompt the model could make a surprising difference in reasoning performance. In a technique called chain-of-thought prompting, simply adding intermediate steps—- like saying, “Let’s think step-by-step”—caused models to dramatically improve on arithmetic, logic, and common-sense reasoning tasks. These cues help the model unfold its internal "reasoning" across multiple tokens, rather than jumping straight to a potentially flawed conclusion. Arithmetic could still be clunky and prone to error in early LLMs until researchers made what in retrospect seemed an obvious move of just allowing models to use calculators; instead of trying to predict what followed "77 + 33 = ", those tokens were just replaced with an API call to a calculator. This strategy, dubbed _Toolformer_, was eventually extended to other external tools like search engines and translation APIs. Instead of trying to memorize everything, the model learns to delegate too.
 
 Despite these advances, _hallucinations_ remain a major challenge. LLMs sometimes generate text that is syntactically and stylistically correct but factually wrong, such as inventing citations, quoting fake laws, or providing incorrect historical dates. These hallucinations stem from the fact that the model is fundamentally trained to predict likely sequences, not to verify facts. Even post-training cannot fully eliminate hallucinations, though techniques like retrieval-augmented generation, better RLHF reward models, and external tool use help reduce them.
-
-## Social Ramifications of Large Language Models
