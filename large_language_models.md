@@ -80,7 +80,7 @@ When there are probabilities, there are probability distributions, and this dist
 Why did GPTs ditch encoders? Recall what encoders are used for in the first place: capturing contextual relationships between all words bidirectionally (previous and future words). GPTs don't want this, and they explicitly block access to future words as they generate in real-time using _masked (causal) self-attention_ in each transformer block. Think of the original task of the transformer of translating text from one language to another, where we first need to understand (encode) what the original language is saying and then produce an output (decode) in another language. With GPTs, we are just generating text and all we need is the context sequence we already have.
 
 <p align="center">
-    <img src="https://github.com/user-attachments/assets/d5e106e8-148e-46ad-9bc4-b8b9a7893ff4" width="500px">
+    <img src="https://github.com/user-attachments/assets/ac1b1827-124c-423a-bfa7-58fb25c4fe0e" width="500px">
 </p>
 
 At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". To implement this no-looking-ahead mechanism, recall the attention formula $\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}} \right) V$. If we add a causal mask $M$, defined as 
