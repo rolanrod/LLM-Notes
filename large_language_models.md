@@ -61,6 +61,11 @@ Around the same time, Facebook AI released BART (Bidirectional and Auto-Regressi
 
 What made T5 and BART so portable and streamlined was how efficiently they could be fine-tuned. Each of their pre-training objectives created models that already possessed strong general language understanding and generation capabilities, requiring only small adjustments to excel at downstream tasks. 
 
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/8f7db6c8-6508-480b-9b84-da7456702aa9" width="600px">
+</p>
+<p align="center"><i>Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer</i>, Raffel et. al 2019</p>
+
 
 ### GPT
 The Generative Pre-trained Transformer (GPT) was introduced by OpenAI in 2018 as a decoder-only transformer architecture-- no encoder, and no cross-attention. In many ways, GPTs depart from the "transforming" of text that the vanilla transformer was made for (translation, most notably) and double-down on text generation through _autoregressive next-word prediction_, which is simply the process making predictions and sequentially feeding them back through the model at every iteration, yielding a sequence that grows from left to right. 
