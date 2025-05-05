@@ -82,7 +82,7 @@ Why did GPTs ditch encoders? Recall what encoders are used for in the first plac
     <img src="https://github.com/user-attachments/assets/d5e106e8-148e-46ad-9bc4-b8b9a7893ff4" width="500px">
 </p>
 
-At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". This no-looking-ahead mechanism is referred to as a causal mask and manifests in the attention weights as a triangular matrix with zeros to the right of the diagonal. To implement this restriction, recall the attention formula $\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}} \right) V$. If we add a causal mask $M$, defined as 
+At the heart of the GPT architecture is the aforementioned masked self-attention mechanism, which is just like the vanilla self-attention we have seen previously but without forward connections-- each word can only attend to itself and to words before it. Consider the input "I like black coffee"; "black" only attends to "I", "like", and "black", not "coffee". To implement this no-looking-ahead mechanism, recall the attention formula $\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}} \right) V$. If we add a causal mask $M$, defined as 
 
 $$
 M = 
@@ -94,7 +94,7 @@ M =
 \end{bmatrix},
 $$
 
-to $\frac{QK^\top}{\sqrt{d_k}} $, we can effectively remove any bidirectionality and enforce a backwards-only context.
+to $\frac{QK^\top}{\sqrt{d_k}} $, we can effectively remove any bidirectionality and enforce a backwards-only context (remember that softmaxes flatten large negative numbers to 0).
 
 <p align="center">
     <img src="https://github.com/user-attachments/assets/3ad356e5-f259-450e-8aab-4d9082c2a890" width="500px">
