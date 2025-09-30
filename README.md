@@ -1,5 +1,5 @@
 # A Guide to Large Language Models (LLMs)
-_Note: knowledge of attention and transformer architecture by the reader is assumed_
+_Note: These notes were prepared as course material for CS 4782/5782: Introduction to Deep Learning at Cornell University. Knowledge of attention and transformer architecture by the reader is assumed_
 
 ## Introduction to Large Language Models
 Large language models have taken the world by storm as the pioneering technology of the AI boom of the 2020s, but what are they and what makes them so special? Text generation is not a new phenomenon-- we have already learned about statistical methods like n-grams (Brown et al., 1990) and nascent deep learning algorithms like LSTM (Hochreiter & Schmidhuber, et al., 1997)-- yet the advent of LLMs like OpenAI's GPT has propelled artificial intelligence into the global spotlight.
